@@ -10,7 +10,7 @@ SWITCH = 25
 CW = 0
 CCW = 1
 MICROSTEPPING = 400
-FREQ = 10000
+FREQ = 8000
 DELAY = 1 / (2 * FREQ)
 
 GPIO.setup(PUL, GPIO.OUT, initial=GPIO.LOW) # sets PUL as an output pin
