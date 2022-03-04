@@ -57,10 +57,8 @@ class MoveMotor:
 
         #Move off of homing switch a constant amount, no matter the microstep amout
         time.sleep(0.5)
-        GPIO.output(self.dirPin, GPIO.LOW)
-        for step in range(int(self.microstep/6)): # 1/6 of a revolution = 10mm off from switch
-            GPIO.output(self.pulsePin, GPIO.HIGH)
-            time.sleep(0.002)
-            GPIO.output(self.pulsePin, GPIO.LOW)
-            time.sleep(0.002)
+        self.moveMotor('left', 300.0, 10.0)
         time.sleep(0.5)
+
+        # Go to middle of rail
+        self.moveMotor('left', 300.0, 405.0)
