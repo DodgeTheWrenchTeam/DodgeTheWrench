@@ -69,39 +69,48 @@ class Vector:
 #Subtracting two vectors to determine a current velocity
 
 
-def calculateVelocity(p, q):
+# def calculateVelocity(p, q):
 
-    velocity = Vector(q.x - p.x, q.y - p.y, q.z - p.z)
+#     velocity = Vector(q.x - p.x, q.y - p.y, q.z - p.z)
 
-    return velocity
+#     return velocity
 
 
-#Taking data(position) as a list or array and converting to a vector class object
+# #Taking data(position) as a list or array and converting to a vector class object
 
-def list2Vector(r):
+# def list2Vector(r):
 
-    position = Vector(r[0], r[1], r[2])
+#     position = Vector(r[0], r[1], r[2])
 
-    return position
+#     return position
 
-#Test vectors for troubleshooting
-p = [9, 20, 30]
+# #Test vectors for troubleshooting
+# p = [9, 20, 30]
 
-q = [7, 5, 20]
+# q = [7, 5, 20]
 
-p = list2Vector(p)
+# p = list2Vector(p)
 
-q = list2Vector(q)
+# q = list2Vector(q)
 
-x_tol = 10
+#x_tol = 10
 
 #Main algorithm for object avoidance determination
 
 
+# Inputs:
+# p     position 1, defined as a list
+# 1     position 2, defined as a list
+# x_tol tolerance in mm for collision box
 def DodgeWrench(p, q, x_tol):
 
+    # Convert input lists into necessary vectors
+    p = Vector(p[0], p[1], p[2])
+
+    q = Vector(q[0], q[1], q[2])
+
     #finding velocity from two measured points
-    v_net = calculateVelocity(p, q)
+    v_net = Vector(q.x - p.x, q.y - p.y, q.z - p.z)
 
     v_net.print() ###
 
@@ -176,11 +185,11 @@ def DodgeWrench(p, q, x_tol):
 
     elif abs(x_star) <= x_tol and x_star < 0:
 
-        Choice = 'Move Left'
+        Choice = 'Move Right'
 
     elif abs(x_star) <= x_tol and x_star > 0:
 
-        Choice = 'Move Right'
+        Choice = 'Move Left'
 
     else:
 
@@ -191,10 +200,12 @@ def DodgeWrench(p, q, x_tol):
 
     return Choice, moveDistance
 
-
-output = DodgeWrench(p, q, x_tol)
-
-print('test =', output)
+if __name__ == "__main__":
+    p = [100,0,500]
+    q = [50,0,400]
+    x_tol = 100
+    output = DodgeWrench(p, q, x_tol)
+    print('Result =', output)
 
 
 
