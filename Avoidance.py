@@ -185,11 +185,11 @@ def DodgeWrench(p, q, x_tol):
 
     elif abs(x_star) <= x_tol and x_star < 0:
 
-        Choice = 'Move Right'
+        Choice = 'right'
 
     elif abs(x_star) <= x_tol and x_star > 0:
 
-        Choice = 'Move Left'
+        Choice = 'left'
 
     else:
 
