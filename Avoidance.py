@@ -112,35 +112,35 @@ def DodgeWrench(p, q, x_tol):
     #finding velocity from two measured points
     v_net = Vector(q.x - p.x, q.y - p.y, q.z - p.z)
 
-    if v_net.norm <= 10:
+    if v_net.norm <= 25 or v_net.z >= 0:
         return "Stay", 0
 
-    v_net.print() ###
+    #v_net.print() ###
 
-    v_net.printNorm() ###
+    #v_net.printNorm() ###
 
     #projecting onto plane of interest
     v_naught = v_net.project('y')
     #generating unit vector
     v_hat = v_naught.unit()
 
-    v_hat.print() ###
+    #v_hat.print() ###
 
-    v_hat.printNorm() ###
+    #v_hat.printNorm() ###
 
     #using dot product to find relative angle
     theta = math.acos((-v_hat.z*p.z)/p.z)
 
-    print('theta =', theta) ###
+    #print('theta =', theta) ###
     #solving for distance from expected point of x-y plane intersection
     r_contact = p.z/math.cos(theta)
 
-    print('rcontact =', r_contact) ###
+    #print('rcontact =', r_contact) ###
 
     #quantity used to determine intersection point relative to the oak-D
     x_T = math.sqrt(r_contact**2 - p.z**2)
 
-    print('x_T =', x_T) ###
+    #print('x_T =', x_T) ###
 
     #defining initial x direction with considerations made for niche cases
     if p.x != 0:
