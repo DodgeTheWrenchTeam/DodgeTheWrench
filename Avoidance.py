@@ -103,7 +103,8 @@ class Vector:
 # 1     position 2, defined as a list
 # x_tol tolerance in mm for collision box
 def DodgeWrench(p, q, x_tol):
-
+    #start time of algorithm for determining algorithm run time
+    start = time.time()
     # Convert input lists into necessary vectors
     p = Vector(p[0], p[1], p[2])
 
@@ -200,7 +201,8 @@ def DodgeWrench(p, q, x_tol):
 
     #How far does the cart need to move to avoid the projectile?
     moveDistance = x_tol - abs(x_star)
-
+    runTime = time.time() - start
+    print('Run Time =', runTime)
     return Choice, moveDistance
 
 if __name__ == "__main__":
