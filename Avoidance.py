@@ -86,14 +86,14 @@ class Vector:
 
 # #Test vectors for troubleshooting
 # p = [9, 20, 30]
-
+#
 # q = [7, 5, 20]
-
+#
 # p = list2Vector(p)
-
+#
 # q = list2Vector(q)
-
-#x_tol = 10
+#
+# x_tol = 10
 
 #Main algorithm for object avoidance determination
 
@@ -115,32 +115,32 @@ def DodgeWrench(p, q, x_tol):
     if v_net.norm <= 25 or v_net.z >= 0:
         return "Stay", 0
 
-    #v_net.print() ###
+    v_net.print() ###
 
-    #v_net.printNorm() ###
+    v_net.printNorm() ###
 
     #projecting onto plane of interest
     v_naught = v_net.project('y')
     #generating unit vector
     v_hat = v_naught.unit()
 
-    #v_hat.print() ###
+    v_hat.print() ###
 
-    #v_hat.printNorm() ###
+    v_hat.printNorm() ###
 
     #using dot product to find relative angle
     theta = math.acos((-v_hat.z*p.z)/p.z)
 
-    #print('theta =', theta) ###
+    print('theta =', theta) ###
     #solving for distance from expected point of x-y plane intersection
     r_contact = p.z/math.cos(theta)
 
-    #print('rcontact =', r_contact) ###
+    print('rcontact =', r_contact) ###
 
     #quantity used to determine intersection point relative to the oak-D
-    x_T = math.sqrt(r_contact**2 - p.z**2)
+    x_T = math.sqrt((r_contact**2) - (p.z**2))
 
-    #print('x_T =', x_T) ###
+    print('x_T =', x_T) ###
 
     #defining initial x direction with considerations made for niche cases
     if p.x != 0:
@@ -206,7 +206,7 @@ def DodgeWrench(p, q, x_tol):
 if __name__ == "__main__":
     p = [100,0,500]
     q = [50,0,400]
-    x_tol = 100
+    x_tol = 1000
     output = DodgeWrench(p, q, x_tol)
     print('Result =', output)
 
