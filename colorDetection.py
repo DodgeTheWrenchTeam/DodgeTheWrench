@@ -33,7 +33,7 @@ camRgb.setColorOrder(dai.ColorCameraProperties.ColorOrder.RGB)
 camRgb.preview.link(xoutRgb.input)
 
 myColorFinder = ColorFinder(False)
-hsvVals = {'hmin': 25, 'smin': 17, 'vmin': 55, 'hmax': 47, 'smax': 255, 'vmax': 255}
+hsvVals = {'hmin': 26, 'smin': 22, 'vmin': 168, 'hmax': 56, 'smax': 227, 'vmax': 255}
 # Connect to device and start pipeline
 with dai.Device(pipeline) as device:
 
@@ -61,48 +61,49 @@ with dai.Device(pipeline) as device:
             z = round(100 - radius,3)
             data = x,y,z
             print(data)
+            positionlist.append([x,y,z])
+
+            if len(positionlist) > 5:
+                position1 = positionlist[0]
+                position2 = positionlist[5]
+                #print(positionlist)
+                positionlist.pop(0)
+                print("position 1,2: " + str(position1) + "," + str(position2))
+            
+                # Run avoidance script to determine direction and distance for avoidance
+                dirMove, dirDist = DodgeWrench(position1, position2, 400)
+                print("Direction: " + str(dirMove) + "\nDistance: " + str(dirDist))
+
+                # Move motor the appropriate direction, then move back to center.
+                if (dirMove == "right"):
+                    print("Avoidance is a go!" + "\nDirection: " + str(dirMove))
+                    #superRunTime = time.time() - begin
+                    #print('Command Time =', superRunTime)
+                    move.moveMotor("right",2000,200)
+                    #superRunTime = time.time() - begin
+                    #print('Net Time =', superRunTime)
+                    time.sleep(1)
+                    move.moveMotor("left",1000,200)
+                    time.sleep(1)
+
+                elif (dirMove == "left"):
+                    print("Avoidance is a go!" + "\nDirection: " + str(dirMove))
+                    #superRunTime = time.time() - begin
+                    #print('Command Time =', superRunTime)
+                    move.moveMotor("left",2000,200)
+                    #superRunTime = time.time() - begin
+                    #print('Net Time =', superRunTime)
+                    time.sleep(1)
+                    move.moveMotor("right",1000,200)
+                    time.sleep(1)
+                    
+                else:
+                    print("do not avoid")
+                
         # Retrieve 'bgr' (opencv format) frame
         cv2.imshow("rgb", imgContour)
 
-        positionlist.append([x,y,z])
-
-        if len(positionlist) > 5:
-            position1 = positionlist[0]
-            position2 = positionlist[5]
-            #print(positionlist)
-            positionlist.pop(0)
-            print("position 1,2: " + str(position1) + "," + str(position2))
         
-            # Run avoidance script to determine direction and distance for avoidance
-            dirMove, dirDist = DodgeWrench(position1, position2, 300)
-            print("Direction: " + str(dirMove) + "\nDistance: " + str(dirDist))
-
-            # Move motor the appropriate direction, then move back to center.
-            if (dirMove == "right"):
-                print("Avoidance is a go!" + "\nDirection: " + str(dirMove))
-                #superRunTime = time.time() - begin
-                #print('Command Time =', superRunTime)
-                move.moveMotor("right",1000,200)
-                #superRunTime = time.time() - begin
-                #print('Net Time =', superRunTime)
-                time.sleep(1)
-                move.moveMotor("left",1000,200)
-                time.sleep(1)
-
-            elif (dirMove == "left"):
-                print("Avoidance is a go!" + "\nDirection: " + str(dirMove))
-                #superRunTime = time.time() - begin
-                #print('Command Time =', superRunTime)
-                move.moveMotor("left",1000,200)
-                #superRunTime = time.time() - begin
-                #print('Net Time =', superRunTime)
-                time.sleep(1)
-                move.moveMotor("right",1000,200)
-                time.sleep(1)
-                
-            else:
-                print("do not avoid")
-            
         
         if cv2.waitKey(1) == ord('q'):
             break
