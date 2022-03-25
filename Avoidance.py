@@ -162,54 +162,41 @@ def DodgeWrench(p, q, x_tol):
 
     # checking possible cases to determine proper way to calculate x*
     if abs(v_naught.x) < epsilon:
-
         x_star = p.x
 
     elif v_hat.x * x_hat > 0:
-
         x_star = (abs(p.x) + x_T)*x_hat
 
     elif x_T > abs(p.x):
-
         x_star = -(x_T - abs(p.x))*x_hat
 
     elif x_T < abs(p.x):
-
         x_star = (abs(p.x) - x_T)*x_hat
 
     print('x* =', x_star) ###
 
     # determining choice based on value of x* and desired collision window
     if abs(x_star) > x_tol:
-
         Choice = 'Stay'
-
     elif abs(x_star) <= epsilon:
-
         Choice = 'Move Either Way'
-
     elif abs(x_star) <= x_tol and x_star < 0:
-
         Choice = 'right'
-
     elif abs(x_star) <= x_tol and x_star > 0:
-
         Choice = 'left'
-
     else:
-
         Choice = 'Error'
 
     # How far does the cart need to move to avoid the projectile?
     moveDistance = x_tol - abs(x_star)
     runTime = time.time() - start
-    print('Run Time =', runTime)
+    print('Run Time =', "%.10f" % runTime)
     return Choice, moveDistance
 
 
 if __name__ == "__main__":
-    p = [100,0,500]
-    q = [50,0,400]
+    p = [0,0,500]
+    q = [-75,-100,400]
     x_tol = 1000
     output = DodgeWrench(p, q, x_tol)
     print('Result =', output)
