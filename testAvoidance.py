@@ -2,13 +2,26 @@ import unittest
 import Avoidance
 
 vectorsToTest = [
-    [[100, 0, 500], [50, 0, 0]],
-    [[100, 0, 500], [50, 0, 400]]
+    # Level with camera
+    [[0, 0, 500], [0, 0, 0]],       # straight on
+    [[150, 0, 500], [50, 0, 0]],    # from right to right of sled
+    [[-150, 0, 500], [-50, 0, 0]],  # from left to left of sled
+    [[150, 0, 500], [-50, 0, 0]],   # from right to left of sled
+    [[-150, 0, 500], [50, 0, 0]]   # from left to right of sled
+
+    # Create additional test vectors
+    # [[0, 0, 500], [0, 0, 0]],
+    # [[150, 0, 500], [50, 0, 0]],
+    # [[-150, 0, 500], [-50, 0, 0]]
 ]
 
 expectedOutcomes = [
+    ['Move Either Way', 200.0],
     ['left', 150.0],
-    ['right', 450.0]
+    ['right', 150.0],
+    ['right', 150.0],
+    ['left', 150.0]
+
 ]
 
 class testAvoidance(unittest.TestCase):
