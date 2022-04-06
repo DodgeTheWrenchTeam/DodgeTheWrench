@@ -101,7 +101,7 @@ class Vector:
 
 # Inputs:
 # p     position 1, defined as a list
-# 1     position 2, defined as a list
+# q     position 2, defined as a list
 # x_tol tolerance in mm for collision box
 def DodgeWrench(p, q, x_tol):
     # start time of algorithm for determining algorithm run time
@@ -117,7 +117,7 @@ def DodgeWrench(p, q, x_tol):
     # finding velocity from two measured points
     v_net = Vector((q.x - p.x)/sampleRate, (q.y - p.y)/sampleRate , (q.z - p.z)/sampleRate)
 
-    if v_net.norm <= 450 or v_net.z >= 0:
+    if v_net.norm <= 1000 or v_net.z >= 0:
         return "Stay", 0
 
     # v_net.print() ###
@@ -176,7 +176,7 @@ def DodgeWrench(p, q, x_tol):
     elif x_T < abs(p.x):
         x_star = (abs(p.x) - x_T)*x_hat
 
-    print('x* =', x_star) ###
+    #print('x* =', x_star) ###
 
     # determining choice based on value of x* and desired collision window
     if abs(x_star) > x_tol:
@@ -193,7 +193,7 @@ def DodgeWrench(p, q, x_tol):
     # How far does the cart need to move to avoid the projectile?
     moveDistance = x_tol - abs(x_star)
     runTime = time.time() - start
-    print('Run Time =', "%.10f" % runTime)
+    #print('Run Time =', "%.10f" % runTime)
     return Choice, moveDistance
 
 

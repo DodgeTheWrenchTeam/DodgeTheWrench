@@ -58,7 +58,7 @@ with dai.Device(pipeline) as device:
             area = int(contours[0]['area'])
             # Note: this Z position is really not correct, it's just a rough estimate
             radius = math.sqrt(area/math.pi)
-            z = round(100 - radius,3)
+            z = round(100 - radius,3) * 30
             # Compensating for pixels to real numbers
             x = (31.5/math.sqrt(area/math.pi))*x
             y = (31.5/math.sqrt(area/math.pi))*y
