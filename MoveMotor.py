@@ -36,8 +36,7 @@ class MoveMotor:
             print("Usgae: moveMotor(dir, speed, dist)")
             print("Please enter a valid direction ('left' or 'right')")
             # Do we want to import sys and use sys.exit(1) here to exit the program?
-            print("Using 'right' as default")
-            #GPIO.output(self.dirPin, GPIO.HIGH)
+            print("WARNING: Direction not specified!")
 
         distanceToSteps = int((dist / 60.0) * self.microstep)
         for step in range(distanceToSteps):
@@ -47,26 +46,18 @@ class MoveMotor:
             time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
 
     def home(self):
-        # Move motor to the right
-        #GPIO.output(self.dirPin, GPIO.HIGH)
         # Check endstop switch
         pressed = GPIO.input(self.homePin)
         while not pressed: # while switch has not been triggered (is still low from pulldown resistor)
-            # Move 1mm towards endstop
-            self.moveMotor("right",100,1)
-            # provide one pulse to the motor to turn it one step
-            # GPIO.output(self.pulsePin, GPIO.HIGH)
-            # time.sleep(0.002)
-            # GPIO.output(self.pulsePin, GPIO.LOW)
-            # time.sleep(0.002)
+            self.moveMotor("right", 100, 1) # Move 1mm towards endstop
             pressed = GPIO.input(self.homePin)
-
+        time.sleep(0.5)
         # Go to middle of rail
         self.moveMotor('left', 300.0, 405.0)
 
 if __name__ == "__main__":
     m = MoveMotor()
     m.home()
-    m.moveMotor("left",1500,300)
-    m.moveMotor("right",1000,300)
-    m.moveMotor("left",500,300)
+    m.moveMotor("left", 1500, 300)
+    m.moveMotor("right", 1000, 300)
+    m.moveMotor("left", 500, 300)

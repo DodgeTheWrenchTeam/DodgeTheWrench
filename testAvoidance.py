@@ -4,7 +4,7 @@ import Avoidance
 vectorsToTest = [
     # Level with camera in y-axis
     [[0, 0, 500], [0, 0, 0]],       # straight on
-    [[0, 0, 100], [0, 0, 0]],       # straight on
+    [[0, 0, 101], [0, 0, 0]],       # straight on
     [[150, 0, 500], [50, 0, 0]],    # from right to right of sled
     [[-150, 0, 500], [-50, 0, 0]],  # from left to left of sled
     [[150, 0, 500], [-50, 0, 0]],   # from right to left of sled
@@ -14,7 +14,7 @@ vectorsToTest = [
     [[400, 0, 1000], [250, 0, 0]],  # always right of camera and outside tolerance
     [[200, 0, 200], [201, 0, 0]],   # always right of camera and outside tolerance
     [[-200, 0, 100], [-210, 0, 0]], # always left of camera and outside tolerance
-    [[-200, 0, 10], [-210, 0, 0]],  # always left of camera and outside tolerance
+    [[-200, 0, 101], [-210, 0, 0]],  # always left of camera and outside tolerance
 
     # Above camera coming downwards in y-axis
     [[0, 500, 500], [0, 50, 0]],        # straight
@@ -28,7 +28,7 @@ vectorsToTest = [
     [[400, 400, 1000], [300, 375, 0]],  # always right of camera and outside tolerance
     [[200, 375, 200], [201, 350, 0]],   # always right of camera and outside tolerance
     [[-200, 375, 100], [-215, 350, 0]], # always left of camera and outside tolerance
-    [[-200, 375, 10], [-215, 350, 0]],  # always left of camera and outside tolerance
+    [[-200, 375, 105], [-215, 350, 0]],  # always left of camera and outside tolerance
 
     # Below camera moving upwards in y-axis
     [[0, -500, 500], [0, -50, 0]],          # straight
