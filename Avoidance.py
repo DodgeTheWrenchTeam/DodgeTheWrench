@@ -199,8 +199,8 @@ def DodgeWrench(p, q, x_tol):
 
 if __name__ == "__main__":
     p = [0,0,1000]
-    q = [0,0,954]
-    x_tol = 100
+    q = [-10,0,954]
+    x_tol = 1000
     output = DodgeWrench(p, q, x_tol)
     print('Result =', output)
 
