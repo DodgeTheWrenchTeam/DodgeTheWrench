@@ -5,6 +5,7 @@ import Avoidance
 vectorsToTest = [
     # Level with camera in y-axis
     [[0, 0, 500], [0, 0, 0]],       # straight on
+    [[0, 0, 100], [0, 0, 0]],       # straight on
     [[150, 0, 500], [50, 0, 0]],    # from right to right of sled
     [[-150, 0, 500], [-50, 0, 0]],  # from left to left of sled
     [[150, 0, 500], [-50, 0, 0]],   # from right to left of sled
@@ -18,6 +19,7 @@ vectorsToTest = [
 
     # Above camera coming downwards in y-axis
     [[0, 500, 500], [0, 50, 0]],        # straight
+    [[0, 500, 50], [0, 50, 0]],         # straight
     [[150, 350, 500], [50, 50, 0]],     # from right to right of sled
     [[-150, 100, 500], [-50, 10, 0]],   # from left to left of sled
     [[150, 1000, 500], [-50, 250, 0]],  # from right to left of sled
@@ -31,6 +33,7 @@ vectorsToTest = [
 
     # Below camera moving upwards in y-axis
     [[0, -500, 500], [0, -50, 0]],          # straight
+    [[0, -500, 10], [0, -50, 0]],           # straight
     [[250, -350, 500], [75, -50, 0]],       # from right to right of sled
     [[-150, -100, 500], [-10, 0, 0]],       # from left to left of sled
     [[150, -1000, 500], [-175, -250, 0]],   # from right to left of sled
@@ -45,6 +48,7 @@ vectorsToTest = [
 
 expectedOutcomes = [
     ['Move Either Way', 200.0],
+    ['Move Either Way', 200.0],
     ['left', 150.0],
     ['right', 150.0],
     ['right', 150.0],
@@ -57,6 +61,7 @@ expectedOutcomes = [
     ['Stay', -10.0],
 
     ['Move Either Way', 200.0],
+    ['Move Either Way', 200.0],
     ['left', 150.0],
     ['right', 150.0],
     ['right', 150.0],
@@ -68,6 +73,7 @@ expectedOutcomes = [
     ['Stay', -15.0],
     ['Stay', -15.0],
 
+    ['Move Either Way', 200.0],
     ['Move Either Way', 200.0],
     ['left', 125.0],
     ['right', 190.0],
