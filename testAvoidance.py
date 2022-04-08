@@ -8,8 +8,8 @@ vectorsToTest = [
     [[-150, 0, 500], [-50, 0, 0]],  # from left to left of sled
     [[150, 0, 500], [-50, 0, 0]],   # from right to left of sled
     [[-150, 0, 500], [50, 0, 0]],   # from left to right of sled
-    [[0, 0, 1000], [40, 0, 0]],     # from center to right of sled
-    [[0, 0, 1000], [-40, 0, 0]],    # from center to left of sled
+    [[0, 0, 10000], [40, 0, 0]],    # from center to right of sled
+    [[0, 0, 10000], [-40, 0, 0]],   # from center to left of sled
     [[400, 0, 1000], [250, 0, 0]],  # always right of camera and outside tolerance
     [[200, 0, 200], [201, 0, 0]],   # always right of camera and outside tolerance
     [[-200, 0, 100], [-210, 0, 0]], # always left of camera and outside tolerance
@@ -21,8 +21,8 @@ vectorsToTest = [
     [[-150, 100, 500], [-50, 10, 0]],   # from left to left of sled
     [[150, 1000, 500], [-50, 250, 0]],  # from right to left of sled
     [[-150, 10, 500], [50, 0, 0]],      # from left to right of sled
-    [[0, 1000, 1000], [80, 500, 0]],    # from center to right of sled
-    [[0, 750, 1000], [-80, 200, 0]],    # from center to left of sled
+    [[0, 1000, 10000], [80, 500, 0]],   # from center to right of sled
+    [[0, 750, 10000], [-80, 200, 0]],   # from center to left of sled
     [[400, 400, 1000], [300, 375, 0]],  # always right of camera and outside tolerance
     [[200, 375, 200], [201, 350, 0]],   # always right of camera and outside tolerance
     [[-200, 375, 100], [-215, 350, 0]], # always left of camera and outside tolerance
@@ -34,8 +34,8 @@ vectorsToTest = [
     [[-150, -100, 500], [-10, 0, 0]],       # from left to left of sled
     [[150, -1000, 500], [-175, -250, 0]],   # from right to left of sled
     [[-150, -10, 500], [25, 0, 0]],         # from left to right of sled
-    [[0, -1000, 500], [199, -250, 0]],      # from center to right of sled
-    [[0, -1000, 500], [-199, -500, 0]],     # from center to left of sled
+    [[0, -1000, 5000], [199, -250, 0]],     # from center to right of sled
+    [[0, -1000, 5000], [-199, -500, 0]],    # from center to left of sled
     [[400, 200, 1000], [225, 175, 0]],      # always right of camera and outside tolerance
     [[200, 350, 200], [201, 125, 0]],       # always right of camera and outside tolerance
     [[-200, 350, 100], [-205, 125, 0]],     # always left of camera and outside tolerance
