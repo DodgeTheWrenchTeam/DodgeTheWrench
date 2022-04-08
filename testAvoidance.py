@@ -87,7 +87,7 @@ expectedOutcomes = [
     ['Stay', -5.0]
 ]
 
-sep = '\n------------------------------------\n'
+sep = '\n-------------------------------------------------\n'
 new_line = '\n'
 tab = '\t'
 
@@ -96,9 +96,9 @@ class testAvoidance(unittest.TestCase):
         print("\nTesting output from 'Avoidance.py' using different input vectors...")
         for currentSet in range(len(vectorsToTest)):
             choice, distance = Avoidance.DodgeWrench(vectorsToTest[currentSet][0], vectorsToTest[currentSet][1], 200.0)
-            self.assertEqual(choice, expectedOutcomes[currentSet][0], msg = f"{sep}Choice from set {currentSet + 1} does not match.\
+            self.assertEqual(choice, expectedOutcomes[currentSet][0], msg = f"{sep}'Choice' from set {currentSet + 1} does not match.\
                 {new_line}CALCULATED: {choice}{tab}EXPECTED: {expectedOutcomes[currentSet][0]}{sep}")
-            self.assertAlmostEqual(distance, expectedOutcomes[currentSet][1], msg = f"{sep}Distance from set {currentSet + 1} does not match.\
+            self.assertAlmostEqual(distance, expectedOutcomes[currentSet][1], msg = f"{sep}'moveDistance' from set {currentSet + 1} does not match.\
                 {new_line}CALCULATED: {distance}{tab}EXPECTED: {expectedOutcomes[currentSet][1]}{sep}")
         print(f"Testing done.\nTotal test vectors applied: {len(vectorsToTest)}")
 
