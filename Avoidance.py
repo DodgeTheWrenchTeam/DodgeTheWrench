@@ -112,7 +112,7 @@ def DodgeWrench(p, q, x_tol):
     q = Vector(q[0], q[1], q[2])
 
     #Defining time in seconds between two sample locations (based on number of frames between locations and fps of camera)
-    sampleRate = 0.033
+    sampleRate = 0.1
 
     # finding velocity from two measured points
     v_net = Vector((q.x - p.x)/sampleRate, (q.y - p.y)/sampleRate , (q.z - p.z)/sampleRate)
