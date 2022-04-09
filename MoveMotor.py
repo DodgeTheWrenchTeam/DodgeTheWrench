@@ -27,16 +27,12 @@ class MoveMotor:
         # Define the microstepping
         self.microstep = 400
 
-    def moveMotor(self,dir,speed,dist):
+    def moveMotor(self, dir, speed, dist):
+        assert ((dir == 'left') or (dir == 'right')), "\nUsage: moveMotor(dir, speed, dist)"
         if dir == "left":
             GPIO.output(self.dirPin, GPIO.LOW)
-        elif dir == "right":
-            GPIO.output(self.dirPin, GPIO.HIGH)
         else:
-            print("Usgae: moveMotor(dir, speed, dist)")
-            print("Please enter a valid direction ('left' or 'right')")
-            # Do we want to import sys and use sys.exit(1) here to exit the program?
-            print("WARNING: Direction not specified!")
+            GPIO.output(self.dirPin, GPIO.HIGH)
 
         distanceToSteps = int((dist / 60.0) * self.microstep)
         for step in range(distanceToSteps):
@@ -44,6 +40,48 @@ class MoveMotor:
             time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
             GPIO.output(self.pulsePin, GPIO.LOW)
             time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
+
+    def accelerate(self, dir, accelDist, decelDist, maxSpeed, dist):
+        '''
+        This function uses the 'time' and the maxSpeed to create a linear
+        acceleration profile at the beginning and end of the motor movement.
+        Inputs:
+            dir         direction to move the motor [left, right]
+            accelDist   distance at beginning of movement where the motor will accelerate
+            decelDist   distance at end of movement where the motor will decelerate
+            maxSpeed    the maximum speed the motor will move the cart, in mm/s 
+            dist        the distance the motor will move the cart in total, in mm
+        Outputs:
+            None        Returns nothing, but sends pulse commands to motor driver
+        '''
+        assert ((dir == 'left') or (dir == 'right')), "\nUsage: accelerate(dir, time, maxSpeed, dist)"
+        if dir == "left":
+            GPIO.output(self.dirPin, GPIO.LOW)
+        else:
+            GPIO.output(self.dirPin, GPIO.HIGH)
+        assert accelDist + decelDist <= dist, "accelStartDist + decelEndDist must be <= dist"
+
+        distanceToSteps = int((dist / 60.0) * self.microstep)
+        accelSteps = int((accelDist / 60.0) * self.microstep)
+        decelSteps = int((decelDist / 60.0) * self.microstep)
+
+        minSpeed = 0 # change this if you want a higher starting/ending speed before the acceleration ramping
+
+        accelSpeedChange = (maxSpeed - minSpeed) / accelSteps
+        decelSpeedChange = (maxSpeed - minSpeed) / decelSteps
+
+        speed = minSpeed - accelSpeedChange
+
+        for step in range(distanceToSteps):
+            if step < accelSteps:
+                speed = speed + accelSpeedChange
+            elif step >= distanceToSteps - decelSteps:
+                speed = speed - decelSpeedChange
+            GPIO.output(self.pulsePin, GPIO.HIGH)
+            time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
+            GPIO.output(self.pulsePin, GPIO.LOW)
+            time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
+
 
     def home(self):
         # Check endstop switch

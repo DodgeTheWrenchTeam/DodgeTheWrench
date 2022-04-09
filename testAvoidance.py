@@ -13,8 +13,8 @@ vectorsToTest = [
     [[0, 0, 10000], [-40, 0, 0]],   # from center to left of sled
     [[400, 0, 1000], [250, 0, 0]],  # always right of camera and outside tolerance
     [[200, 0, 200], [201, 0, 0]],   # always right of camera and outside tolerance
-    [[-200, 0, 100], [-210, 0, 0]], # always left of camera and outside tolerance
-    [[-200, 0, 101], [-210, 0, 0]],  # always left of camera and outside tolerance
+    [[-200, 0, 101], [-210, 0, 0]], # always left of camera and outside tolerance
+    [[-200, 0, 101], [-210, 0, 0]], # always left of camera and outside tolerance
 
     # Above camera coming downwards in y-axis
     [[0, 500, 500], [0, 50, 0]],        # straight
@@ -27,8 +27,8 @@ vectorsToTest = [
     [[0, 750, 10000], [-80, 200, 0]],   # from center to left of sled
     [[400, 400, 1000], [300, 375, 0]],  # always right of camera and outside tolerance
     [[200, 375, 200], [201, 350, 0]],   # always right of camera and outside tolerance
-    [[-200, 375, 100], [-215, 350, 0]], # always left of camera and outside tolerance
-    [[-200, 375, 105], [-215, 350, 0]],  # always left of camera and outside tolerance
+    [[-200, 375, 101], [-215, 350, 0]], # always left of camera and outside tolerance
+    [[-200, 375, 105], [-215, 350, 0]], # always left of camera and outside tolerance
 
     # Below camera moving upwards in y-axis
     [[0, -500, 500], [0, -50, 0]],          # straight
@@ -41,8 +41,8 @@ vectorsToTest = [
     [[0, -1000, 5000], [-199, -500, 0]],    # from center to left of sled
     [[400, 200, 1000], [225, 175, 0]],      # always right of camera and outside tolerance
     [[200, 350, 200], [201, 125, 0]],       # always right of camera and outside tolerance
-    [[-200, 350, 100], [-205, 125, 0]],     # always left of camera and outside tolerance
-    [[-200, 350, 10], [-205, 125, 0]]       # always left of camera and outside tolerance
+    [[-200, 350, 101], [-205, 125, 0]],     # always left of camera and outside tolerance
+    [[-200, 350, 101], [-205, 125, 0]]      # always left of camera and outside tolerance
 ]
 
 expectedOutcomes = [
