@@ -117,7 +117,7 @@ def DodgeWrench(p, q, x_tol):
     # finding velocity from two measured points
     v_net = Vector((q.x - p.x)/sampleRate, (q.y - p.y)/sampleRate , (q.z - p.z)/sampleRate)
 
-    if v_net.norm <= 1000 or v_net.z >= 0:
+    if abs(v_net.z) <= 1000 or v_net.z >= 0:
         return "Stay", 0
 
     # v_net.print() ###
@@ -199,8 +199,8 @@ def DodgeWrench(p, q, x_tol):
 
 if __name__ == "__main__":
     p = [0,0,1000]
-    q = [0,0,954]
-    x_tol = 100
+    q = [-10,0,954]
+    x_tol = 1000
     output = DodgeWrench(p, q, x_tol)
     print('Result =', output)
 
