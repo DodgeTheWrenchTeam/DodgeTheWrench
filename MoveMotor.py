@@ -59,14 +59,22 @@ class MoveMotor:
             GPIO.output(self.dirPin, GPIO.LOW)
         else:
             GPIO.output(self.dirPin, GPIO.HIGH)
+            
+        if accelDist <= 1:
+            accelDist = 1
+        if decelDist <= 1:
+            decelDist = 1
+        
         assert accelDist + decelDist <= dist, "accelStartDist + decelEndDist must be <= dist"
 
         distanceToSteps = int((dist / 60.0) * self.microstep)
+        assert accelDist != 0 and decelDist != 0
         accelSteps = int((accelDist / 60.0) * self.microstep)
         decelSteps = int((decelDist / 60.0) * self.microstep)
+        assert accelSteps >= 1 and decelSteps >= 1, "Acceleration/Deceleration distance is not large enough"
 
-        minSpeed = 0 # change this if you want a higher starting/ending speed before the acceleration ramping
-
+        minSpeed = 10 # change this if you want a higher starting/ending speed before the acceleration ramping
+        
         accelSpeedChange = (maxSpeed - minSpeed) / accelSteps
         decelSpeedChange = (maxSpeed - minSpeed) / decelSteps
 
@@ -77,10 +85,18 @@ class MoveMotor:
                 speed = speed + accelSpeedChange
             elif step >= distanceToSteps - decelSteps:
                 speed = speed - decelSpeedChange
-            GPIO.output(self.pulsePin, GPIO.HIGH)
-            time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
-            GPIO.output(self.pulsePin, GPIO.LOW)
-            time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
+            if speed <= 0:
+                continue
+            if speed >= 1:
+                GPIO.output(self.pulsePin, GPIO.HIGH)
+                time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
+                GPIO.output(self.pulsePin, GPIO.LOW)
+                time.sleep(1/ (2 * (speed / 60.0) * self.microstep))
+            else:
+                GPIO.output(self.pulsePin, GPIO.HIGH)
+                time.sleep(1 / (2 * (minSpeed / 60.0) * self.microstep))
+                GPIO.output(self.pulsePin, GPIO.LOW)
+                time.sleep(1/ (2 * (minSpeed / 60.0) * self.microstep))
 
 
     def home(self):
@@ -96,6 +112,10 @@ class MoveMotor:
 if __name__ == "__main__":
     m = MoveMotor()
     m.home()
-    m.moveMotor("left", 1500, 300)
-    m.moveMotor("right", 1000, 300)
-    m.moveMotor("left", 500, 300)
+    #m.moveMotor("left", 1500, 300)
+    #m.moveMotor("right", 1000, 300)
+    #m.moveMotor("left", 500, 300)
+    m.accelerate("right",.1,100,1000,300)
+    m.accelerate("left",50,50,500,600)
+    m.accelerate("right",100,100,1000,300)
+    
