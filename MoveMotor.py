@@ -99,11 +99,11 @@ class MoveMotor:
                 time.sleep(1/ (2 * (minSpeed / 60.0) * self.microstep))
 
 
-    def home(self):
+    def home(self, speed=100):
         # Check endstop switch
         pressed = GPIO.input(self.homePin)
         while not pressed: # while switch has not been triggered (is still low from pulldown resistor)
-            self.moveMotor("right", 100, 1) # Move 1mm towards endstop
+            self.moveMotor("right", speed, 1) # Move 1mm towards endstop
             pressed = GPIO.input(self.homePin)
         time.sleep(0.5)
         # Go to middle of rail
