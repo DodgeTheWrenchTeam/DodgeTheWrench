@@ -54,36 +54,36 @@ expectedOutcomes = [
     ['left', 150.0],
     ['left', 160.0],
     ['right', 160.0],
-    ['Stay', -50.0],
-    ['Stay', -1.0],
-    ['Stay', -10.0],
-    ['Stay', -10.0],
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0],
 
     ['Move Either Way', 200.0],
     ['Move Either Way', 200.0],
     ['left', 150.0],
     ['right', 150.0],
-    ['right', 150.0],
+    ['Stay', 0],
     ['left', 150.0],
-    ['left', 120.0],
+    ['Stay', 0],
     ['right', 120.0],
-    ['Stay', -100.0],
-    ['Stay', -1.0],
-    ['Stay', -15.0],
-    ['Stay', -15.0],
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0],
 
     ['Move Either Way', 200.0],
     ['Move Either Way', 200.0],
     ['left', 125.0],
     ['right', 190.0],
-    ['right', 25.0],
+    ['Stay', 0],
     ['left', 175.0],
-    ['left', 1.0],
-    ['right', 1.0],
-    ['Stay', -25.0],
-    ['Stay', -1.0],
-    ['Stay', -5.0],
-    ['Stay', -5.0]
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0],
+    ['Stay', 0]
 ]
 
 sep = '\n-------------------------------------------------\n'
@@ -94,7 +94,7 @@ class testAvoidance(unittest.TestCase):
     def testVectors(self):
         print("\nTesting output from 'Avoidance.py' using different input vectors...")
         for currentSet in range(len(vectorsToTest)):
-            choice, distance = Avoidance.DodgeWrench(vectorsToTest[currentSet][0], vectorsToTest[currentSet][1], 200.0)
+            choice, distance = Avoidance.DodgeWrench(vectorsToTest[currentSet][0], vectorsToTest[currentSet][1], 200.0, 200.0, 30, 2)
             self.assertEqual(choice, expectedOutcomes[currentSet][0], msg = f"{sep}'Choice' from set {currentSet + 1} does not match.\
                 {new_line}CALCULATED: {choice}{tab}EXPECTED: {expectedOutcomes[currentSet][0]}{sep}")
             self.assertAlmostEqual(distance, expectedOutcomes[currentSet][1], msg = f"{sep}'moveDistance' from set {currentSet + 1} does not match.\
