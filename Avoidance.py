@@ -103,7 +103,7 @@ class Vector:
 # p     position 1, defined as a list
 # q     position 2, defined as a list
 # x_tol tolerance in mm for collision box
-def DodgeWrench(p, q, x_tol):
+def DodgeWrench(p, q, x_tol, y_tol, FPS, sampleLength):
     # start time of algorithm for determining algorithm run time
     start = time.time()
     # Convert input lists into necessary vectors
@@ -112,7 +112,7 @@ def DodgeWrench(p, q, x_tol):
     q = Vector(q[0], q[1], q[2])
 
     #Defining time in seconds between two sample locations (based on number of frames between locations and fps of camera)
-    sampleRate = 0.33
+    sampleRate = sampleLength/FPS
 
     # finding velocity from two measured points
     v_net = Vector((q.x - p.x)/sampleRate, (q.y - p.y)/sampleRate , (q.z - p.z)/sampleRate)
@@ -120,54 +120,58 @@ def DodgeWrench(p, q, x_tol):
     if v_net.norm <= 1000 or v_net.z >= 0:
         return "Stay", 0
 
-    # v_net.print() ###
+    # projecting onto planes of interest
+    v_zx_naught = v_net.project('y')
+    v_zy_naught = v_net.project('x')
 
-    # v_net.printNorm() ###
+    # generating unit vectors of interest
+    v_zx_hat = v_zx_naught.unit()
+    v_zy_hat = v_zy_naught.unit()
 
-    # projecting onto plane of interest
-    v_naught = v_net.project('y')
-    # generating unit vector
-    v_hat = v_naught.unit()
+    # using dot product to find relative angles
+    theta = math.acos((-v_zx_hat.z*p.z)/p.z)
+    alpha = math.acos(-v_zy_hat.z)
 
-    # v_hat.print() ###
-
-    # v_hat.printNorm() ###
-
-    # using dot product to find relative angle
-    theta = math.acos((-v_hat.z*p.z)/p.z)
-
-    # print('theta =', theta) ###
     # solving for distance from expected point of x-y plane intersection
-    r_contact = p.z/math.cos(theta)
-
-    # print('rcontact =', r_contact) ###
+    r_contact_zx = p.z/math.cos(theta)
+    r_contact_zy = p.z/math.cos(alpha)
 
     # quantity used to determine intersection point relative to the oak-D
-    x_T = math.sqrt((r_contact**2) - (p.z**2))
-
-    # print('x_T =', x_T) ###
+    x_T = math.sqrt((r_contact_zx**2) - (p.z**2))
+    y_T = math.sqrt((r_contact_zy**2) - (p.z**2))
 
     # defining initial x direction with considerations made for niche cases
     if p.x != 0:
         x_hat = p.x/abs(p.x)
-    elif v_naught.x < 0:
+    elif v_zx_naught.x < 0:
         x_hat = -1
-    elif v_naught.x > 0:
+    elif v_zx_naught.x > 0:
         x_hat = 1
     else:
         x_hat = 0
 
+    # defining initial y direction with considerations made for niche cases
+    if p.y != 0:
+        y_hat = p.y/abs(p.y)
+    elif v_zy_naught.y < 0:
+        y_hat = -1
+    elif v_zy_naught.y > 0:
+        y_hat = 1
+    else:
+        y_hat = 0
+
     # some tolerance so that the program doesnt break
     epsilon = 0.001
 
-    # initializing x* so that program is happy
+    # initializing x* and y* so that program is happy
     x_star = 0
+    y_star = 0
 
     # checking possible cases to determine proper way to calculate x*
-    if abs(v_naught.x) < epsilon:
+    if abs(v_zx_naught.x) < epsilon:
         x_star = p.x
 
-    elif v_hat.x * x_hat > 0:
+    elif v_zx_hat.x * x_hat > 0:
         x_star = (abs(p.x) + x_T)*x_hat
 
     elif x_T > abs(p.x):
@@ -175,23 +179,40 @@ def DodgeWrench(p, q, x_tol):
 
     elif x_T < abs(p.x):
         x_star = (abs(p.x) - x_T)*x_hat
+    
+     # checking possible cases to determine proper way to calculate y*
+    if abs(v_zy_naught.y) < epsilon:
+        y_star = p.y
 
-    #print('x* =', x_star) ###
+    elif v_zy_hat.y * y_hat > 0:
+        y_star = (abs(p.y) + y_T)*y_hat
 
-    # determining choice based on value of x* and desired collision window
-    if abs(x_star) > x_tol:
-        Choice = 'Stay'
-    elif abs(x_star) <= epsilon:
-        Choice = 'Move Either Way'
-    elif abs(x_star) <= x_tol and x_star < 0:
-        Choice = 'right'
-    elif abs(x_star) <= x_tol and x_star > 0:
-        Choice = 'left'
+    elif y_T > abs(p.y):
+        y_star = -(y_T - abs(p.y))*y_hat
+
+    elif y_T < abs(p.y):
+        y_star = (abs(p.y) - y_T)*x_hat
+
+    # determining choice based on value of x*, y*, and desired collision window
+    if abs(y_star) <= y_tol:
+        if abs(x_star) > x_tol:
+            Choice = 'Stay'
+        elif abs(x_star) <= epsilon:
+            Choice = 'Move Either Way'
+        elif abs(x_star) <= x_tol and x_star < 0:
+            Choice = 'right'
+        elif abs(x_star) <= x_tol and x_star > 0:
+            Choice = 'left'
+        else:
+            Choice = 'Error'
     else:
-        Choice = 'Error'
+        Choice = 'Stay'
 
     # How far does the cart need to move to avoid the projectile?
-    moveDistance = x_tol - abs(x_star)
+    if Choice != 'Stay':
+        moveDistance = x_tol - abs(x_star)
+    else:
+        moveDistance = 0
     runTime = time.time() - start
     #print('Run Time =', "%.10f" % runTime)
     return Choice, moveDistance
@@ -199,9 +220,10 @@ def DodgeWrench(p, q, x_tol):
 
 if __name__ == "__main__":
     p = [0,0,1000]
-    q = [-10,0,954]
+    q = [-10,-40,900]
     x_tol = 1000
-    output = DodgeWrench(p, q, x_tol)
+    y_tol = 500
+    output = DodgeWrench(p, q, x_tol, y_tol, 30, 2)
     print('Result =', output)
 
 
