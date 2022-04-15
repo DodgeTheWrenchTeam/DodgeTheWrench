@@ -112,12 +112,12 @@ def DodgeWrench(p, q, x_tol):
     q = Vector(q[0], q[1], q[2])
 
     #Defining time in seconds between two sample locations (based on number of frames between locations and fps of camera)
-    sampleRate = 0.1
+    sampleRate = 0.33
 
     # finding velocity from two measured points
     v_net = Vector((q.x - p.x)/sampleRate, (q.y - p.y)/sampleRate , (q.z - p.z)/sampleRate)
 
-    if abs(v_net.z) <= 1000 or v_net.z >= 0:
+    if v_net.norm <= 1000 or v_net.z >= 0:
         return "Stay", 0
 
     # v_net.print() ###
