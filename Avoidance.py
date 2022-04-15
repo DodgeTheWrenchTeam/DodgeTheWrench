@@ -140,9 +140,14 @@ def DodgeWrench(p, q, x_tol, y_tol, FPS, sampleLength):
     x_T = math.sqrt((r_contact_zx**2) - (p.z**2))
     y_T = math.sqrt((r_contact_zy**2) - (p.z**2))
 
+    # defining commonly used quantities for code efficiency
+    absoPX = abs(p.x)
+    absoPY = abs(p.y)
+    
+
     # defining initial x direction with considerations made for niche cases
     if p.x != 0:
-        x_hat = p.x/abs(p.x)
+        x_hat = p.x/absoPX
     elif v_zx_naught.x < 0:
         x_hat = -1
     elif v_zx_naught.x > 0:
@@ -152,7 +157,7 @@ def DodgeWrench(p, q, x_tol, y_tol, FPS, sampleLength):
 
     # defining initial y direction with considerations made for niche cases
     if p.y != 0:
-        y_hat = p.y/abs(p.y)
+        y_hat = p.y/absoPY
     elif v_zy_naught.y < 0:
         y_hat = -1
     elif v_zy_naught.y > 0:
@@ -172,36 +177,40 @@ def DodgeWrench(p, q, x_tol, y_tol, FPS, sampleLength):
         x_star = p.x
 
     elif v_zx_hat.x * x_hat > 0:
-        x_star = (abs(p.x) + x_T)*x_hat
+        x_star = (absoPX + x_T)*x_hat
 
-    elif x_T > abs(p.x):
-        x_star = -(x_T - abs(p.x))*x_hat
+    elif x_T > absoPX:
+        x_star = -(x_T - absoPX)*x_hat
 
-    elif x_T < abs(p.x):
-        x_star = (abs(p.x) - x_T)*x_hat
+    elif x_T < absoPX:
+        x_star = (absoPX - x_T)*x_hat
     
      # checking possible cases to determine proper way to calculate y*
     if abs(v_zy_naught.y) < epsilon:
         y_star = p.y
 
     elif v_zy_hat.y * y_hat > 0:
-        y_star = (abs(p.y) + y_T)*y_hat
+        y_star = (absoPY + y_T)*y_hat
 
-    elif y_T > abs(p.y):
-        y_star = -(y_T - abs(p.y))*y_hat
+    elif y_T > absoPY:
+        y_star = -(y_T - absoPY)*y_hat
 
-    elif y_T < abs(p.y):
-        y_star = (abs(p.y) - y_T)*x_hat
+    elif y_T < absoPY:
+        y_star = (absoPY - y_T)*y_hat
+
+    # defining more variables for code efficiency
+    absoXS = abs(x_star)
+    absoYS = abs(y_star)
 
     # determining choice based on value of x*, y*, and desired collision window
-    if abs(y_star) <= y_tol:
-        if abs(x_star) > x_tol:
+    if absoYS <= y_tol:
+        if absoXS > x_tol:
             Choice = 'Stay'
-        elif abs(x_star) <= epsilon:
+        elif absoXS <= epsilon:
             Choice = 'Move Either Way'
-        elif abs(x_star) <= x_tol and x_star < 0:
+        elif absoXS <= x_tol and x_star < 0:
             Choice = 'right'
-        elif abs(x_star) <= x_tol and x_star > 0:
+        elif absoXS <= x_tol and x_star > 0:
             Choice = 'left'
         else:
             Choice = 'Error'
