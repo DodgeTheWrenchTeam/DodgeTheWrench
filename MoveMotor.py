@@ -24,8 +24,8 @@ class MoveMotor:
         # Sets homePin as an input with a pull-down resistor
         GPIO.setup(self.homePin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
-        # Define the microstepping
-        self.microstep = 400
+        # Define the microstepping, 400 seems to work well.
+        self.microstep = 800
 
     def moveMotor(self, dir, speed, dist):
         assert ((dir == 'left') or (dir == 'right')), "\nUsage: moveMotor(dir, speed, dist)"
@@ -35,76 +35,73 @@ class MoveMotor:
             GPIO.output(self.dirPin, GPIO.HIGH)
 
         distanceToSteps = int((dist / 60.0) * self.microstep)
+        sleep_time = 1 / (2 * (speed / 60.0) * self.microstep)
         for step in range(distanceToSteps):
             GPIO.output(self.pulsePin, GPIO.HIGH)
-            time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
+            time.sleep(sleep_time)
             GPIO.output(self.pulsePin, GPIO.LOW)
-            time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
+            time.sleep(sleep_time)
 
     def accelerate(self, dir, accelDist, decelDist, maxSpeed, dist):
         '''
-        This function uses the 'time' and the maxSpeed to create a linear
+        This function uses the distances and the maxSpeed to create a linear
         acceleration profile at the beginning and end of the motor movement.
         Inputs:
             dir         direction to move the motor [left, right]
-            accelDist   distance at beginning of movement where the motor will accelerate
-            decelDist   distance at end of movement where the motor will decelerate
+            accelDist   distance at beginning of movement where the motor will accelerate in mm
+            decelDist   distance at end of movement where the motor will decelerate in mm
             maxSpeed    the maximum speed the motor will move the cart, in mm/s 
             dist        the distance the motor will move the cart in total, in mm
         Outputs:
             None        Returns nothing, but sends pulse commands to motor driver
         '''
-        assert ((dir == 'left') or (dir == 'right')), "\nUsage: accelerate(dir, time, maxSpeed, dist)"
-        if dir == "left":
+        # Make sure direction is either 'left' or 'right'
+        assert ((dir == 'left') or (dir == 'right')), "\nDistance must be 'left' or 'right'."
+        if dir == 'left':
             GPIO.output(self.dirPin, GPIO.LOW)
         else:
             GPIO.output(self.dirPin, GPIO.HIGH)
-            
-        if accelDist <= 1:
-            accelDist = 1
-        if decelDist <= 1:
-            decelDist = 1
         
-        assert accelDist + decelDist <= dist, "accelStartDist + decelEndDist must be <= dist"
+        assert accelDist + decelDist <= dist, "\naccelStartDist + decelEndDist must be <= dist"
 
-        distanceToSteps = int((dist / 60.0) * self.microstep)
-        assert accelDist != 0 and decelDist != 0
-        accelSteps = int((accelDist / 60.0) * self.microstep)
-        decelSteps = int((decelDist / 60.0) * self.microstep)
-        assert accelSteps >= 1 and decelSteps >= 1, "Acceleration/Deceleration distance is not large enough"
+        distanceToSteps = int((dist / 60.0) * self.microstep) # Convert total distance to steps
+        accelSteps = int((accelDist / 60.0) * self.microstep) # Convert acceleration distance to steps over which to accelerate
+        decelSteps = int((decelDist / 60.0) * self.microstep) # Convert deceleration distance to steps over which to decelerate
 
         minSpeed = 10 # change this if you want a higher starting/ending speed before the acceleration ramping
-        
-        accelSpeedChange = (maxSpeed - minSpeed) / accelSteps
-        decelSpeedChange = (maxSpeed - minSpeed) / decelSteps
+        assert maxSpeed > minSpeed, f"The maxSpeed must be greater than the minSpeed, which is currently set at: {minSpeed}"
 
+        # Catch case if accelSteps or decelSteps is 0
+        if accelSteps == 0:
+            accelSpeedChange = maxSpeed - minSpeed
+        else:
+            accelSpeedChange = (maxSpeed - minSpeed) / accelSteps
+        if decelSteps == 0:
+            decelSpeedChange = maxSpeed - minSpeed
+        else:
+            decelSpeedChange = (maxSpeed - minSpeed) / decelSteps
+
+        # Initialize speed to be one 'accelSpeedChange' step lower so that first iteration is at the right speed.
         speed = minSpeed - accelSpeedChange
 
         for step in range(distanceToSteps):
-            if step < accelSteps:
+            if step <= accelSteps:
                 speed = speed + accelSpeedChange
             elif step >= distanceToSteps - decelSteps:
                 speed = speed - decelSpeedChange
-            if speed <= 0:
-                continue
-            if speed >= 1:
-                GPIO.output(self.pulsePin, GPIO.HIGH)
-                time.sleep(1 / (2 * (speed / 60.0) * self.microstep))
-                GPIO.output(self.pulsePin, GPIO.LOW)
-                time.sleep(1/ (2 * (speed / 60.0) * self.microstep))
-            else:
-                GPIO.output(self.pulsePin, GPIO.HIGH)
-                time.sleep(1 / (2 * (minSpeed / 60.0) * self.microstep))
-                GPIO.output(self.pulsePin, GPIO.LOW)
-                time.sleep(1/ (2 * (minSpeed / 60.0) * self.microstep))
+            sleep_time = 1 / (2 * (speed / 60.0) * self.microstep)
+            GPIO.output(self.pulsePin, GPIO.HIGH)
+            time.sleep(sleep_time)
+            GPIO.output(self.pulsePin, GPIO.LOW)
+            time.sleep(sleep_time)
 
 
     def home(self, speed=100):
-        # Check endstop switch
+        # Initialize the endstop switch by first reading it's state.
         pressed = GPIO.input(self.homePin)
         while not pressed: # while switch has not been triggered (is still low from pulldown resistor)
             self.moveMotor("right", speed, 1) # Move 1mm towards endstop
-            pressed = GPIO.input(self.homePin)
+            pressed = GPIO.input(self.homePin) # Check endstop switch
         time.sleep(0.5)
         # Go to middle of rail
         self.moveMotor('left', 300.0, 405.0)
