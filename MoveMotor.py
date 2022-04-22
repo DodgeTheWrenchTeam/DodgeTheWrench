@@ -25,7 +25,7 @@ class MoveMotor:
         GPIO.setup(self.homePin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
         # Define the microstepping, 400 seems to work well.
-        self.microstep = 800
+        self.microstep = 200
 
     def moveMotor(self, dir, speed, dist):
         assert ((dir == 'left') or (dir == 'right')), "\nUsage: moveMotor(dir, speed, dist)"
@@ -68,26 +68,24 @@ class MoveMotor:
         accelSteps = int((accelDist / 60.0) * self.microstep) # Convert acceleration distance to steps over which to accelerate
         decelSteps = int((decelDist / 60.0) * self.microstep) # Convert deceleration distance to steps over which to decelerate
 
-        minSpeed = 10 # change this if you want a higher starting/ending speed before the acceleration ramping
-        assert maxSpeed > minSpeed, f"The maxSpeed must be greater than the minSpeed, which is currently set at: {minSpeed}"
+        assert maxSpeed > 0, f"The maxSpeed must be greater than 0"
 
         # Catch case if accelSteps or decelSteps is 0
         if accelSteps == 0:
-            accelSpeedChange = maxSpeed - minSpeed
+            accelSpeedChange = maxSpeed
         else:
-            accelSpeedChange = (maxSpeed - minSpeed) / accelSteps
+            accelSpeedChange = maxSpeed / accelSteps
         if decelSteps == 0:
-            decelSpeedChange = maxSpeed - minSpeed
+            decelSpeedChange = maxSpeed
         else:
-            decelSpeedChange = (maxSpeed - minSpeed) / decelSteps
+            decelSpeedChange = maxSpeed  / decelSteps
 
-        # Initialize speed to be one 'accelSpeedChange' step lower so that first iteration is at the right speed.
-        speed = minSpeed - accelSpeedChange
+        speed = 0
 
         for step in range(distanceToSteps):
             if step <= accelSteps:
                 speed = speed + accelSpeedChange
-            elif step >= distanceToSteps - decelSteps:
+            elif step > distanceToSteps - decelSteps:
                 speed = speed - decelSpeedChange
             sleep_time = 1 / (2 * (speed / 60.0) * self.microstep)
             GPIO.output(self.pulsePin, GPIO.HIGH)
@@ -112,7 +110,27 @@ if __name__ == "__main__":
     #m.moveMotor("left", 1500, 300)
     #m.moveMotor("right", 1000, 300)
     #m.moveMotor("left", 500, 300)
-    m.accelerate("right",.1,100,1000,300)
+    m.accelerate("right",50,100,1000,300)
+    time.sleep(0.5)
     m.accelerate("left",50,50,500,600)
+    time.sleep(0.5)
     m.accelerate("right",100,100,1000,300)
+    time.sleep(0.5)
+    accelerations = 60
+    speed = 3000
+    m.accelerate("left", accelerations, accelerations, speed, 300)
+    time.sleep(0.25)
+    for i in range(10):
+        m.accelerate("right", accelerations, accelerations, speed, 300)
+        time.sleep(0.25)
+        m.accelerate("left", accelerations, accelerations, speed, 300)
+        time.sleep(0.25)
+    m.accelerate("right", accelerations, accelerations, speed, 600)
+    time.sleep(0.25)
+    for i in range(10):
+        m.accelerate("left", accelerations, accelerations, speed, 300)
+        time.sleep(0.25)
+        m.accelerate("right", accelerations, accelerations, speed, 300)
+        time.sleep(0.25)
+    m.accelerate("left", accelerations, accelerations, speed, 300)
     
