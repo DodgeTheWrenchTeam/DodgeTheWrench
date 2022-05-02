@@ -38,9 +38,11 @@ class MoveMotor:
         sleep_time = 1 / (2 * (speed / 60.0) * self.microstep)
         for step in range(distanceToSteps):
             GPIO.output(self.pulsePin, GPIO.HIGH)
-            time.sleep(sleep_time)
+            #time.sleep(sleep_time)
+            self.customSleep(sleep_time)
             GPIO.output(self.pulsePin, GPIO.LOW)
-            time.sleep(sleep_time)
+            #time.sleep(sleep_time)
+            self.customSleep(sleep_time)
 
     def accelerate(self, dir, accelDist, decelDist, maxSpeed, dist):
         '''
@@ -89,9 +91,12 @@ class MoveMotor:
                 speed = speed - decelSpeedChange
             sleep_time = 1 / (2 * (speed / 60.0) * self.microstep)
             GPIO.output(self.pulsePin, GPIO.HIGH)
-            time.sleep(sleep_time)
+            self.customSleep(sleep_time)
+            #time.sleep(sleep_time)
             GPIO.output(self.pulsePin, GPIO.LOW)
-            time.sleep(sleep_time)
+            #time.sleep(sleep_time)
+            self.customSleep(sleep_time)
+
 
 
     def home(self, speed=100):
@@ -103,6 +108,13 @@ class MoveMotor:
         time.sleep(0.5)
         # Go to middle of rail
         self.moveMotor('left', 300.0, 405.0)
+        
+    # Custom sleep method
+    # Pass in time in seconds
+    def customSleep(self, duration):
+        startTime = time.time()
+        while time.time() - startTime < duration:
+            continue
 
 if __name__ == "__main__":
     m = MoveMotor()
@@ -117,7 +129,7 @@ if __name__ == "__main__":
     m.accelerate("right",100,100,1000,300)
     time.sleep(0.5)
     accelerations = 60
-    speed = 3000
+    speed = 1000
     m.accelerate("left", accelerations, accelerations, speed, 300)
     time.sleep(0.25)
     for i in range(10):
